@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+
+  <include file="$(find yolov8_ros)/launch/usb_cam-test.launch" />
+  <include file="$(find yolov8_ros)/launch/yolo_v8.launch" />
+
+</launch>
