@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import sys
+sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 import cv2
+sys.path.append('/opt/ros/kinetic/lib/python2.7/dist-packages')
+
 import torch
-import rospy
 import numpy as np
 from ultralytics import YOLO
 from time import time
+
+import rospy
 
 from std_msgs.msg import Header
 from sensor_msgs.msg import Image
@@ -31,8 +35,12 @@ class Yolo_Dect:
         else:
             self.device = 'cuda'
 
+        self.imgsz = rospy.get_param('~imgsz', '')
+
         self.model = YOLO(weight_path)
-        self.model.fuse()
+        
+        if '.pt' in weight_path:
+            self.model.fuse()
 
         self.model.conf = conf
         self.color_image = Image()
@@ -68,7 +76,8 @@ class Yolo_Dect:
 
         self.color_image = cv2.cvtColor(self.color_image, cv2.COLOR_BGR2RGB)
 
-        results = self.model(self.color_image, show=False, conf=0.3)
+        results = self.model(self.color_image, show=False, conf=0.3, imgsz=self.imgsz)
+        # results = self.model(self.color_image, show=False, conf=0.3, imgsz=(256,320))
 
         self.dectshow(results, image.height, image.width)
 
