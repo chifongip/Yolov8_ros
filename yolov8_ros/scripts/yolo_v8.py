@@ -76,8 +76,8 @@ class Yolo_Dect:
 
         self.color_image = cv2.cvtColor(self.color_image, cv2.COLOR_BGR2RGB)
 
-        results = self.model(self.color_image, show=False, conf=0.3, imgsz=self.imgsz)
-        # results = self.model(self.color_image, show=False, conf=0.3, imgsz=(256,320))
+        results = self.model(self.color_image, show=False, verbose=True, conf=0.3, imgsz=self.imgsz)
+        # results = self.model(self.color_image, show=False, verbose=False, conf=0.3, imgsz=(256,320))
 
         self.dectshow(results, image.height, image.width)
 
@@ -86,7 +86,7 @@ class Yolo_Dect:
     def dectshow(self, results, height, width):
 
         self.frame = results[0].plot()
-        print(str(results[0].speed['inference']))
+        # print(str(results[0].speed['inference']))
         fps = 1000.0/ results[0].speed['inference']
         cv2.putText(self.frame, f'FPS: {int(fps)}', (20,50), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2, cv2.LINE_AA)
 
