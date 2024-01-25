@@ -63,7 +63,7 @@ class Yolo_Dect:
         # if no image messages
         while (not self.getImageStatus):
             rospy.loginfo("waiting for image.")
-            rospy.sleep(2)
+            # rospy.sleep(2)
 
     def image_callback(self, image):
 
