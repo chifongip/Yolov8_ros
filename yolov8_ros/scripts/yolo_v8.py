@@ -50,8 +50,8 @@ class Yolo_Dect:
         self.classes_colors = {}
 
         # image subscribe
-        self.color_sub = rospy.Subscriber(image_topic, Image, self.image_callback,
-                                          queue_size=1, buff_size=52428800)
+        # self.color_sub = rospy.Subscriber(image_topic, Image, self.image_callback, queue_size=1, buff_size=52428800)
+        self.color_sub = rospy.Subscriber(image_topic, Image, self.image_callback, queue_size=1)
 
         # output publishers
         self.position_pub = rospy.Publisher(
