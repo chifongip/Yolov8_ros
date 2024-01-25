@@ -2,7 +2,7 @@
 
 <launch>
 
-  <include file="$(find yolov8_ros)/launch/usb_cam-test.launch" />
+  <include file="$(find yolov8_ros)/launch/gs_usb_cam.launch" />
   <include file="$(find yolov8_ros)/launch/yolo_v8.launch" />
 
 </launch>
