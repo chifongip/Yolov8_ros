@@ -54,11 +54,9 @@ class Yolo_Dect:
         self.color_sub = rospy.Subscriber(image_topic, Image, self.image_callback, queue_size=1)
 
         # output publishers
-        self.position_pub = rospy.Publisher(
-            pub_topic,  BoundingBoxes, queue_size=1)
+        self.position_pub = rospy.Publisher(pub_topic,  BoundingBoxes, queue_size=1)
 
-        self.image_pub = rospy.Publisher(
-            '/yolov8/detection_image',  Image, queue_size=1)
+        self.image_pub = rospy.Publisher('/yolov8/detection_image',  Image, queue_size=1)
 
         # if no image messages
         while (not self.getImageStatus):
@@ -71,12 +69,11 @@ class Yolo_Dect:
         self.boundingBoxes.header = image.header
         self.boundingBoxes.image_header = image.header
         self.getImageStatus = True
-        self.color_image = np.frombuffer(image.data, dtype=np.uint8).reshape(
-            image.height, image.width, -1)
+        self.color_image = np.frombuffer(image.data, dtype=np.uint8).reshape(image.height, image.width, -1)
 
         self.color_image = cv2.cvtColor(self.color_image, cv2.COLOR_BGR2RGB)
 
-        results = self.model(self.color_image, show=False, verbose=True, conf=0.3, imgsz=self.imgsz)
+        results = self.model(self.color_image, show=False, verbose=False, conf=0.3, imgsz=self.imgsz)
         # results = self.model(self.color_image, show=False, verbose=False, conf=0.3, imgsz=(256,320))
 
         self.dectshow(results, image.height, image.width)
