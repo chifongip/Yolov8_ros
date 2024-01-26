@@ -1,5 +1,9 @@
 #!/usr/bin/env python
+import sys
+sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 from ultralytics import YOLO
+sys.path.append('/opt/ros/kinetic/lib/python2.7/dist-packages')
+
 
 # Load an official or custom model
 model = YOLO('/home/ubuntu/yolo_ws/src/Yolov8_ros/yolov8_ros/weights/yolov8n.pt')  # Load an official Detect model
