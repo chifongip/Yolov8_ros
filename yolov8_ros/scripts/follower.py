@@ -13,10 +13,10 @@ from geometry_msgs.msg import Twist
 
 class follower:
     def __init__(self):
-        self.goal_z = 0.6
-        self.z_scale = 1.0
-        self.x_scale = 5.0
-        self.max_z = 1.5
+        self.goal_z = 1.0
+        self.z_scale = 0.5
+        self.x_scale = 1.0
+        self.max_z = 2.5
         
         P = [484.901764, 0.0, 297.242082, 0.0, 0.0, 527.320007, 193.46659, 0.0, 0.0, 0.0, 1.0, 0.0]
         self.fx = P[0]
@@ -40,7 +40,7 @@ class follower:
             dist_vertical = (self.fx * self.D_robot) / width
             dist_actual = (dist_vertical * math.sqrt(pow(self.fx, 2) + pow(x_c_pixel, 2))) / self.fx
 
-            theta = math.degrees(math.atan(x_c_pixel / self.fx))
+            theta = math.atan(x_c_pixel / self.fx)  # radian
 
             # print("dist_vertical: ", dist_vertical)
             # print("dist_actual: ", dist_actual)
@@ -52,15 +52,15 @@ class follower:
             print("x_actual:", x_actual)
             print("z_actual", z_actual)
 
-        #     if z_actual > self.max_z:
-        #         self.cmd_pub.publish(Twist())
-        #     else:
-        #         cmd = Twist()
-        #         cmd.linear.x = (z_actual - self.goal_z) * z_scale
-        #         cmd.angular.z = -x_actual * x_scale
-        #         self.cmd_pub.publish(cmd)
-        # else:
-        #     self.cmd_pub.publish(Twist())
+            if z_actual > self.max_z:
+                self.cmd_pub.publish(Twist())
+            else:
+                cmd = Twist()
+                cmd.linear.x = (z_actual - self.goal_z) * self.z_scale
+                cmd.angular.z = -x_actual * self.x_scale
+                self.cmd_pub.publish(cmd)
+        else:
+            self.cmd_pub.publish(Twist())
 
 
 def main():
