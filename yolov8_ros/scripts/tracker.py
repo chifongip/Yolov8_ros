@@ -25,7 +25,7 @@ class Yolo_Dect:
         image_topic = rospy.get_param('~image_topic', '/camera/color/image_raw')
         pub_topic = rospy.get_param('~pub_topic', '/yolov8/BoundingBoxes')
         self.camera_frame = rospy.get_param('~camera_frame', '')
-        conf = rospy.get_param('~conf', '0.5')
+        self.conf = rospy.get_param('~conf', '0.5')
         self.visualize = rospy.get_param('~visualize', 'True')
 
         # which device will be used
@@ -41,7 +41,7 @@ class Yolo_Dect:
         if '.pt' in weight_path:
             self.model.fuse()
 
-        self.model.conf = conf
+        self.model.conf = self.conf
         self.color_image = Image()
         self.getImageStatus = False
 
@@ -72,8 +72,8 @@ class Yolo_Dect:
 
         self.color_image = cv2.cvtColor(self.color_image, cv2.COLOR_BGR2RGB)
 
-        results = self.model.track(self.color_image, show=False, verbose=False, conf=0.3, imgsz=self.imgsz)
-        # results = self.model(self.color_image, show=False, verbose=False, conf=0.3, imgsz=(256,320))
+        results = self.model.track(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=self.imgsz)
+        # results = self.model(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=(256,320))
 
         self.dectshow(results, image.height, image.width)
 
