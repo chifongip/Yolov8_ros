@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<launch>
+
+  <node pkg="yolov8_ros" type="follower.py" name="follower" output="screen" />
+
+</launch>
