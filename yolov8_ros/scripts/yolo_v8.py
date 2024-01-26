@@ -22,8 +22,7 @@ class Yolo_Dect:
 
         # load parameters
         weight_path = rospy.get_param('~weight_path', '')
-        image_topic = rospy.get_param(
-            '~image_topic', '/camera/color/image_raw')
+        image_topic = rospy.get_param('~image_topic', '/camera/color/image_raw')
         pub_topic = rospy.get_param('~pub_topic', '/yolov8/BoundingBoxes')
         self.camera_frame = rospy.get_param('~camera_frame', '')
         conf = rospy.get_param('~conf', '0.5')
