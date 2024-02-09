@@ -8,7 +8,6 @@ sys.path.append('/opt/ros/kinetic/lib/python2.7/dist-packages')
 import torch
 import numpy as np
 from ultralytics import YOLO
-from time import time
 
 import rospy
 
@@ -19,68 +18,60 @@ from yolov8_ros_msgs.msg import BoundingBox, BoundingBoxes
 
 class Yolo_Dect:
     def __init__(self):
-
         # load parameters
         weight_path = rospy.get_param('~weight_path', '')
-        image_topic = rospy.get_param('~image_topic', '/camera/color/image_raw')
-        pub_topic = rospy.get_param('~pub_topic', '/yolov8/BoundingBoxes')
-        self.camera_frame = rospy.get_param('~camera_frame', '')
-        self.conf = rospy.get_param('~conf', '0.5')
-        self.visualize = rospy.get_param('~visualize', 'True')
+        image_topic = rospy.get_param('~image_topic', 'usb_cam/image_rect')
+        pub_topic = rospy.get_param('~pub_topic', 'yolov8/BoundingBoxes')
+        self.camera_frame = rospy.get_param('~camera_frame', 'usb_cam_link')
+        self.conf = rospy.get_param('~conf', '0.6')
+        self.visualize = rospy.get_param('~visualize', 'true')
 
         # which device will be used
-        if (rospy.get_param('/use_cpu', 'false')):
+        if (rospy.get_param('~use_cpu', 'true')):
             self.device = 'cpu'
         else:
             self.device = 'cuda'
 
-        self.imgsz = rospy.get_param('~imgsz', '')
+        self.imgsz = rospy.get_param('~imgsz', '320')
 
         self.model = YOLO(weight_path)
         
         if '.pt' in weight_path:
             self.model.fuse()
 
-        self.model.conf = self.conf
         self.color_image = Image()
         self.getImageStatus = False
-
-        # Load class color
-        self.classes_colors = {}
 
         # image subscribe
         # self.color_sub = rospy.Subscriber(image_topic, Image, self.image_callback, queue_size=1, buff_size=52428800)
         self.color_sub = rospy.Subscriber(image_topic, Image, self.image_callback, queue_size=1)
 
         # output publishers
-        self.position_pub = rospy.Publisher(pub_topic,  BoundingBoxes, queue_size=1)
+        self.position_pub = rospy.Publisher(pub_topic, BoundingBoxes, queue_size=1)
 
-        self.image_pub = rospy.Publisher('/yolov8/detection_image',  Image, queue_size=1)
+        self.image_pub = rospy.Publisher('yolov8/detection_image', Image, queue_size=1)
 
         # if no image messages
         while (not self.getImageStatus):
             rospy.loginfo("waiting for image.")
-            # rospy.sleep(2)
+
 
     def image_callback(self, image):
-
         self.boundingBoxes = BoundingBoxes()
         self.boundingBoxes.header = image.header
         self.boundingBoxes.image_header = image.header
         self.getImageStatus = True
         self.color_image = np.frombuffer(image.data, dtype=np.uint8).reshape(image.height, image.width, -1)
-
         self.color_image = cv2.cvtColor(self.color_image, cv2.COLOR_BGR2RGB)
 
-        results = self.model(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=self.imgsz)
-        # results = self.model(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=(256,320))
+        results = self.model.predict(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=self.imgsz)
+        # results = self.model.predict(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=(256,320))
 
         self.dectshow(results, image.height, image.width)
-
         cv2.waitKey(3)
 
-    def dectshow(self, results, height, width):
 
+    def dectshow(self, results, height, width):
         self.frame = results[0].plot()
         # print(str(results[0].speed['inference']))
         fps = 1000.0/ results[0].speed['inference']
@@ -100,6 +91,7 @@ class Yolo_Dect:
 
         if self.visualize :
             cv2.imshow('YOLOv8', self.frame)
+
 
     def publish_image(self, imgdata, height, width):
         image_temp = Image()
