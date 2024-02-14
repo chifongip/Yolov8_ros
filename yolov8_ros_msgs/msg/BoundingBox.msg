@@ -4,3 +4,8 @@ int64 ymin
 int64 xmax
 int64 ymax
 string Class
+int64 id
+float64 x 
+float64 y
+float64 z
+float64 dist

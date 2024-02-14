@@ -24,7 +24,7 @@ class Yolo_Dect:
         pub_topic = rospy.get_param('~pub_topic', 'yolov8/BoundingBoxes')
         self.camera_frame = rospy.get_param('~camera_frame', 'usb_cam_link')
         self.conf = rospy.get_param('~conf', '0.6')
-        self.visualize = rospy.get_param('~visualize', 'true')
+        self.visualize = rospy.get_param('~visualize', 'false')
 
         # which device will be used
         if (rospy.get_param('~use_cpu', 'true')):
