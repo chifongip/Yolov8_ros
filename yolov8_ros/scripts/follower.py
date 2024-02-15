@@ -37,6 +37,7 @@ class follower:
             for bbox in msg.bounding_boxes:
                 if bbox.id == self.track_id:
                     track_find = True
+                    print("following maxbot id: ", self.track_id)
                     if bbox.dist > self.max_z:
                         self.cmd_pub.publish(Twist())
                     else:
@@ -83,9 +84,6 @@ class follower:
         #     # print("x_actual:", x_actual)
         #     # print("z_actual", z_actual)
 
-        #     bbox = msg.bounding_boxes
-        #     bbox = sorted(bbox, key=lambda x: x.dist, reverse=False)
-
         #     # if z_actual > self.max_z:
         #     #     self.cmd_pub.publish(Twist())
         #     # else:
@@ -93,14 +91,6 @@ class follower:
         #     #     cmd.linear.x = (z_actual - self.goal_z) * self.z_scale
         #     #     cmd.angular.z = -x_actual * self.x_scale
         #     #     self.cmd_pub.publish(cmd)
-
-        #     if bbox[0].dist > self.max_z:
-        #         self.cmd_pub.publish(Twist())
-        #     else:
-        #         cmd = Twist()
-        #         cmd.linear.x = (bbox[0].z - self.goal_z) * self.z_scale
-        #         cmd.angular.z = -bbox[0].x * self.x_scale
-        #         self.cmd_pub.publish(cmd)
 
 
 def main():
