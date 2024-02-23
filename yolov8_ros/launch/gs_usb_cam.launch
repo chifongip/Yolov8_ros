@@ -1,7 +1,5 @@
 <launch>
-<!--
-  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" >
--->
+
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" >
     <param name="video_device" value="/dev/video0" />
 
@@ -16,7 +14,6 @@
   <node name="image_proc" pkg="image_proc" type="image_proc" ns="usb_cam"/>
 
   <node pkg="tf2_ros" type="static_transform_publisher" name="baselinkToUsbCam" args="0.22 0 0.118 -1.57 0 -1.57 base_link usb_cam_link"/>
-
 
 </launch>
 

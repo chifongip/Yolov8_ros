@@ -54,6 +54,7 @@ class Yolo_Dect:
         # if no image messages
         while (not self.getImageStatus):
             rospy.loginfo("waiting for image.")
+            rospy.sleep(1)
 
 
     def image_callback(self, image):
@@ -64,8 +65,8 @@ class Yolo_Dect:
         self.color_image = np.frombuffer(image.data, dtype=np.uint8).reshape(image.height, image.width, -1)
         self.color_image = cv2.cvtColor(self.color_image, cv2.COLOR_BGR2RGB)
 
-        results = self.model.predict(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=self.imgsz)
-        # results = self.model.predict(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=(256,320))
+        results = self.model.predict(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=self.imgsz, device=self.device)
+        # results = self.model.predict(self.color_image, show=False, verbose=False, conf=self.conf, imgsz=(256,320), device=self.device)
 
         self.dectshow(results, image.height, image.width)
         cv2.waitKey(3)

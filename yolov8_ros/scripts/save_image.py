@@ -15,7 +15,6 @@ class imageSaver:
         self.bridge = CvBridge()
         self.cv_image = None
         self.count = 1
-        self.interval = 0.5
 
         self.flag = 1
 
@@ -27,7 +26,6 @@ class imageSaver:
         rospy.Subscriber("/image_saver_flag", Int32, self.flagCallback, queue_size=1)
 
         rospy.loginfo("Starting image saver node.")
-        time.sleep(1)
         
     
     def flagCallback(self, msg):
@@ -40,29 +38,27 @@ class imageSaver:
         
 
     def imageCallback(self, msg):
-        try:
-            self.cv_image = self.bridge.imgmsg_to_cv2(msg)
-            filename = 'maxbot_dataset/maxbot{}.jpg'.format(self.count)
-            if self.flag == 1 and (self.linear_vel_x > 0 or self.angular_vel_z > 0):
+        if msg.header.seq % 10 == 0:
+            try:
+                self.cv_image = self.bridge.imgmsg_to_cv2(msg)
+                filename = 'person_dataset/person{}.jpg'.format(self.count)
+                # if self.flag == 1 and (self.linear_vel_x > 0 or self.angular_vel_z > 0):
+                #     cv2.imwrite(filename, self.cv_image)
+                #     print("image saved:", self.count)
+                #     self.count += 1
+                # elif self.flag == 2:
                 cv2.imwrite(filename, self.cv_image)
                 print("image saved:", self.count)
                 self.count += 1
-                time.sleep(self.interval)
-            elif self.flag == 2:
-                cv2.imwrite(filename, self.cv_image)
-                print("image saved:", self.count)
-                self.count += 1
-                time.sleep(self.interval)
-
-        except CvBridgeError as e:
-            print(e)
+            except CvBridgeError as e:
+                print(e)
         
 
 if __name__ == '__main__':
     try:
         rospy.init_node('image_listener')
-        if not os.path.exists('maxbot_dataset'):
-            os.makedirs('maxbot_dataset')
+        if not os.path.exists('person_dataset'):
+            os.makedirs('person_dataset')
         image_saver = imageSaver()
         rospy.spin()
     except rospy.ROSInterruptException:

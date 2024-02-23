@@ -18,6 +18,7 @@ results = model.track(
             conf=0.6, 
             imgsz=320,           # imgsz=(256,320)
             tracker="botsort.yaml", 
-            persist=True
+            persist=True,
+            device="cpu"
             )
 # results = model.track(source="https://youtu.be/LNwODJXcvt4", show=True, tracker="bytetrack.yaml")  # Tracking with ByteTrack tracker

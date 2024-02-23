@@ -58,6 +58,7 @@ class YOLOTracker:
         # if no image messages
         while (not self.getImageStatus):
             rospy.loginfo("waiting for image.")
+            rospy.sleep(1)
 
 
     def imageCallback(self, image):
@@ -75,7 +76,8 @@ class YOLOTracker:
             conf=self.conf, 
             imgsz=self.imgsz,           # imgsz=(256,320)
             tracker="botsort.yaml", 
-            persist=True
+            persist=True,
+            device=self.device
             )
 
         self.dectShow(results, image.height, image.width)
